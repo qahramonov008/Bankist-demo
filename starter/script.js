@@ -287,7 +287,7 @@ const stickyNav = function(entries) {
 
 headerObserver.observe(header)
 
-// ------------------ Revealing elemnts on scroll -----------
+// ------------------ Revealing elements on scroll -----------
 const allSections = document.querySelectorAll('.section')
  
 const revealSection = (entries, observer) => {
@@ -323,7 +323,7 @@ const loadImg = (entries, observer) => {
     entry.target.classList.remove('lazy-img')
   })
 
-  
+
 }
 
 const imgObserver = new IntersectionObserver(loadImg, {
