@@ -313,7 +313,7 @@ allSections.forEach(section => {
 
 const imgTargets = document.querySelectorAll('img[data-src]')
 
-const loadImg = (entries, observer) => {
+const loadImg = (entries) => {
   const [entry] = entries
 
   if(!entry.isIntersecting) return;
