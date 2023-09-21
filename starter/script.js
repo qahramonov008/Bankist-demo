@@ -243,3 +243,93 @@ const handleHover = function(e) {
 nav.addEventListener('mouseover', handleHover.bind('0.5'))
 
 nav.addEventListener('mouseout', handleHover.bind('1'))
+
+// -------------------------------- Implementing a sticky navigation: the scroll event -----------
+// const initCoords = section1.getBoundingClientRect() // Juda ham yomon holat
+
+// // Sticky navigation 
+// window.addEventListener('scroll', function(e) {
+//   if(this.scrollY >= initCoords.top) nav.classList.add('sticky')
+//   else nav.classList.remove('sticky')
+// })
+
+// ------------------------- A better way: yhe intersection observer api -----------
+
+// const obsCallback = function(entries, observer){
+//   const [entry] = entries
+  
+// }
+
+// const obsOptions = {
+//   root: null,
+//   threshold: 0.1 // array ichida bir qancha qiymatlar ham berish mumkin
+// }
+
+// const observer = new IntersectionObserver(obsCallback, obsOptions)
+
+// observer.observe(section1)
+
+const header = document.querySelector('.header')
+const navHeight = getComputedStyle(nav).height
+
+const stickyNav = function(entries) {
+  const [entry] = entries
+  
+  if(!entry.isIntersecting) nav.classList.add('sticky')
+  else nav.classList.remove('sticky')
+}
+
+ const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}`
+})
+
+headerObserver.observe(header)
+
+// ------------------ Revealing elemnts on scroll -----------
+const allSections = document.querySelectorAll('.section')
+ 
+const revealSection = (entries, observer) => {
+  const [entry] = entries 
+  
+  if(!entry.isIntersecting) return;
+  
+  entry.target.classList.remove('section--hidden')
+  observer.unobserve(entry.target)
+}
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.2
+})
+
+allSections.forEach(section => {
+  sectionObserver.observe(section)
+  section.classList.add('section--hidden')
+})
+  
+// --------------------- Lazy loading images ----------------
+
+const imgTargets = document.querySelectorAll('img[data-src]')
+
+const loadImg = (entries, observer) => {
+  const [entry] = entries
+
+  if(!entry.isIntersecting) return;
+
+  entry.target.src = entry.target.dataset.src
+  entry.target.addEventListener('load', () => {
+    entry.target.classList.remove('lazy-img')
+  })
+
+  
+}
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+})
+
+imgTargets.forEach(img => imgObserver.observe(img))
