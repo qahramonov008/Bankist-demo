@@ -333,3 +333,66 @@ const imgObserver = new IntersectionObserver(loadImg, {
 })
 
 imgTargets.forEach(img => imgObserver.observe(img))
+
+// ---------------Building a slider component
+
+const slides = document.querySelectorAll('.slide')
+const btnLeft = document.querySelector('.slider__btn--left')
+const btnRight = document.querySelector('.slider__btn--right')
+const dotContainer = document.querySelector('.dots')
+
+let curSlide = 0
+const maxLength = slides.length
+
+const goToSlide = function(slide) {
+  slides.forEach((content, i) => content.style.transform = `translateX(${(i - slide) * 100}%)`)
+}
+
+goToSlide(0)
+
+const createDots = function() {
+  slides.forEach((_, i) => {
+    dotContainer.insertAdjacentHTML(
+      'beforeend',
+      `<button class="dots__dot" data-slide="${i}"></button>`
+    )
+  })
+}
+createDots()
+
+const activateDot = function(slide) {
+  document.querySelectorAll('.dots__dot').forEach(dot => dot.classList.remove('dots__dot--active'))
+  document.querySelector(`.dots__dot[data-slide="${slide}"]`).classList.add('dots__dot--active')
+}
+activateDot(0)
+
+const prevSlide = function() {
+  curSlide = curSlide === 0 ? maxLength - 1 : --curSlide
+
+  goToSlide(curSlide)
+  activateDot(curSlide)
+}
+
+const nextSlide = function () {
+  curSlide = curSlide === maxLength - 1 ? 0 : ++curSlide
+
+  goToSlide(curSlide)
+  activateDot(curSlide)
+}
+
+btnRight.addEventListener('click', nextSlide)
+
+btnLeft.addEventListener('click', prevSlide)
+
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'ArrowLeft') prevSlide()
+  e.key === 'ArrowRight' && nextSlide()
+})
+
+dotContainer.addEventListener('click', function(e) {
+  if(e.target.classList.contains('dots__dot')) {
+    const slide = e.target.dataset.slide
+    goToSlide(slide)
+    activateDot(slide)
+  }
+})
